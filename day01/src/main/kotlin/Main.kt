@@ -11,3 +11,7 @@ fun extractDigitsFromString(stringWithDigits: String): String {
 fun getFirstAndLastDigit(stringWithDigits: String): String {
     return "${stringWithDigits.first()}${stringWithDigits.last()}"
 }
+
+fun doubleOutputIfSingleDigit(singleDigitString: String): String {
+    return singleDigitString + singleDigitString
+}
