@@ -1,21 +1,26 @@
 package org.example
 
 fun main() {
+    println(solveCalibration())
+}
+
+fun solveCalibration(): Int {
     val calibrationValues: List<String> = readLinesFromTextFile("calibrationValues.txt")
 
     var calibrationValueSum = 0
 
-    for (item in calibrationValues) {
+    calibrationValues.forEach { item ->
         val stringWithDigits = extractDigitsFromString(item)
 
-        if (stringWithDigits.length == 1) {
-            calibrationValueSum += doubleOutputIfSingleDigit(stringWithDigits).toInt()
-        } else {
-            calibrationValueSum += getFirstAndLastDigit(stringWithDigits).toInt()
-        }
+        calibrationValueSum +=
+            if (stringWithDigits.length == 1) {
+                doubleOutputIfSingleDigit(stringWithDigits).toInt()
+            } else {
+                getFirstAndLastDigit(stringWithDigits).toInt()
+            }
     }
 
-    println(calibrationValueSum)
+    return calibrationValueSum
 }
 
 fun extractDigitsFromString(stringWithDigits: String): String {
