@@ -4,6 +4,20 @@ fun main() {
     println("Hello World!")
 }
 
+fun extractCubeCounts(roundInput: String): CubeCounts {
+    val counts = roundInput.split(",")
+        .fold(CubeCounts(0, 0, 0)) { acc, cube ->
+            when {
+                cube.contains("red") -> acc.copy(red = acc.red + extractNumber(cube))
+                cube.contains("green") -> acc.copy(green = acc.green + extractNumber(cube))
+                cube.contains("blue") -> acc.copy(blue = acc.blue + extractNumber(cube))
+                else -> acc
+            }
+        }
+
+    return counts
+}
+
 fun extractNumber(cube: String): Int {
     return cube.split(" ").firstOrNull { it.toIntOrNull() != null }?.toInt() ?: 0
 }
