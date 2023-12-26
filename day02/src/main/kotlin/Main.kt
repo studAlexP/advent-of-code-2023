@@ -1,7 +1,26 @@
 package org.example
 
+import java.io.File
+
 fun main() {
-    println("Hello World!")
+    val inputFile = File("day02/src/main/resources/gameInput.txt")
+
+    val games = readGames(inputFile)
+
+    val sumOfPossibleGames = games
+        .withIndex()
+        .filter { (_, game) ->
+            game.split(";").filter { it.isNotBlank() }
+                .map { extractCubeCounts(it) }
+                .all { isGamePossible(it) }
+        }
+        .sumOf { it.index + 1 }
+
+    println("Sum of possible game IDs: $sumOfPossibleGames")
+}
+
+fun readGames(fileWithGames: File): List<String> {
+    return fileWithGames.readText().split("Game ").filter { it.isNotBlank() }
 }
 
 fun extractCubeCounts(roundInput: String): CubeCounts {
@@ -28,6 +47,6 @@ fun isGamePossible(cubeCounts: CubeCounts): Boolean {
     val MAX_NUMBER_OF_BLUE_CUBES = 14
 
     return cubeCounts.red <= MAX_NUMBER_OF_RED_CUBES &&
-        cubeCounts.green <= MAX_NUMBER_OF_GREEN_CUBES &&
-        cubeCounts.blue <= MAX_NUMBER_OF_BLUE_CUBES
+            cubeCounts.green <= MAX_NUMBER_OF_GREEN_CUBES &&
+            cubeCounts.blue <= MAX_NUMBER_OF_BLUE_CUBES
 }
