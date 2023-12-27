@@ -7,16 +7,52 @@ fun main() {
 
     val games = readGames(inputFile)
 
-    val sumOfPossibleGames = games
-        .withIndex()
-        .filter { (_, game) ->
-            game.split(";").filter { it.isNotBlank() }
-                .map { extractCubeCounts(it) }
-                .all { isGamePossible(it) }
-        }
-        .sumOf { it.index + 1 }
+    val (sumOfPossibleGames, sumOfProducts) = processGames(games)
 
-    println("Sum of possible game IDs: $sumOfPossibleGames")
+    println("Exercise 1 - Sum of possible game IDs: $sumOfPossibleGames")
+    println("Exercise 2 - Sum of products: $sumOfProducts")
+}
+
+fun processGames(games: List<String>): Pair<Int, Int> {
+    var sumOfPossibleGames = 0
+    var sumOfProducts = 0
+    for ((index, game) in games.withIndex()) {
+        val rounds = game.split(";").filter { it.isNotBlank() }
+        val (roundPossible, gameCounts) = processRounds(rounds)
+
+
+
+        if (roundPossible) {
+            sumOfPossibleGames += index + 1 // Adding the index (game number) of the possible game
+        }
+
+        sumOfProducts += calculateSumOfProducts(gameCounts)
+    }
+
+    return Pair(sumOfPossibleGames, sumOfProducts)
+}
+
+fun processRounds(gameRounds: List<String>): Pair<Boolean, CubeCounts> {
+    var roundPossible = true
+    var gameCounts = CubeCounts(0, 0, 0)
+    for (round in gameRounds) {
+        val cubeCounts = extractCubeCounts(round)
+        gameCounts =
+            CubeCounts(
+                maxOf(gameCounts.red, cubeCounts.red),
+                maxOf(gameCounts.green, cubeCounts.green),
+                maxOf(gameCounts.blue, cubeCounts.blue),
+            )
+        if (!isGamePossible(cubeCounts)) {
+            roundPossible = false
+        }
+    }
+
+    return Pair(roundPossible, gameCounts)
+}
+
+fun calculateSumOfProducts(gameCounts: CubeCounts): Int {
+    return gameCounts.red * gameCounts.green * gameCounts.blue
 }
 
 fun readGames(fileWithGames: File): List<String> {
